@@ -1,0 +1,23 @@
+{
+	"rutracker": {
+		"login_url": "http://rutracker.org/forum/login.php",
+		"download_url": "http://rutracker.org/forum/dl.php",
+		"login": "",
+		"password": "",
+		"encoding": "cp1251",
+		"template_file_name": "[rutracker]%s.torrent",
+		"dir": ""
+	},
+	"transmission": {
+		"host": "",
+		"port": 0
+	},
+	"useragent": {
+		"default": "Opera/9.80 (Windows NT 6.1; WOW64; U; ru) Presto/2.10.229 Version/11.62",
+		"file": "useragent.txt"
+	},
+	"telegram":{
+		"chat_id": [],
+		"token": ""
+	}
+}
