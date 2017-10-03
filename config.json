@@ -19,5 +19,6 @@
 	"telegram":{
 		"chat_id": [],
 		"token": ""
-	}
+	},
+	"cookie_file": "cookie.txt"
 }

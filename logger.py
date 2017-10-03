@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
 import sys
-import config
-
+import settings
+config = settings.config()
 
 def logger():
-    if config.debug == True:
+    if config['debug'] == True:
         lvl = logging.DEBUG
     else:
         lvl = logging.INFO
