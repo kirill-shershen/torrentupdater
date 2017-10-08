@@ -91,27 +91,29 @@ def check_tasks(tc, proxies):
 	
 	#download and open torrent file
 	for task in tc.get_torrents():
-		logger.info(u'checking torrent "%s"...' % task.name)
-		id = id_by_task(task.comment)
-		post_params = {'t': id}
-		file = s.get('%s?%s' % (config['rutracker']['download_url'], urllib.urlencode(post_params)) , timeout = 20, cookies=read_cookies(),stream=True)
-		if file.status_code == 200:
-			file_data = file.content
-			if not check_same_files(task.hashString, file_data):
-				logger.info(u'getting new series for "%s"...' % task.name)
-				new_torrent_file = os.path.join(config['rutracker']['dir'], config['rutracker']['template_file_name'] % id)
-				with open(new_torrent_file, 'wb') as tf:
-					tf.write(file_data)
-				tc.remove_torrent(task.hashString)
-				tc.add_torrent(r'file://%s' % new_torrent_file)
+		if task.status == 'stopped':
+			logger.info(u'checking torrent "%s"...' % task.name)
+			id = id_by_task(task.comment)
+			post_params = {'t': id}
+			file = s.get('%s?%s' % (config['rutracker']['download_url'], urllib.urlencode(post_params)) , timeout = 20, cookies=read_cookies(),stream=True)
+			if file.status_code == 200:
+				file_data = file.content
+				if not check_same_files(task.hashString, file_data):
+					logger.info(u'getting new series for "%s"...' % task.name)
+					new_torrent_file = os.path.join(config['rutracker']['dir'], config['rutracker']['template_file_name'] % id)
+					with open(new_torrent_file, 'wb') as tf:
+						tf.write(file_data)
+					tc.remove_torrent(task.hashString)
+					tc.add_torrent(r'file://%s' % new_torrent_file)
 
-				#notifications
-				for b in config['telegram']['chat_id']:
-					bot.send_message(b, u'Скачиваются новые серии для %s' % task.name)
-		else:
-			logger.warning('error update "%s": http response: %d' % (task.name, file.status_code))
-			raise
-		tc.start_all()
+					#notifications
+					for b in config['telegram']['chat_id']:
+						bot.send_message(b, u'Скачиваются новые серии для %s' % task.name)
+					task.start()
+			else:
+				logger.warning('error update "%s": http response: %d' % (task.name, file.status_code))
+				raise
+
 
 def main():
 	try:
